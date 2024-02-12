@@ -1,0 +1,91 @@
+// declare the variables
+        String msg;
+        int[] rowSelected = trainersTable.getSelectedRows();
+        int badDefault = 100; // should be something like TrainersTable.TRAINER_ID according to task table
+
+        // Checking if a row was selected
+        if(rowSelected.length == 0){
+            JOptionPane.showMessageDialog(
+                    App.getFrame(),
+                    Local.getString("Please select one trainer at a time."),
+                    Local.getString("No trainer has been selected."),
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        } else if (rowSelected.length > 1) {
+            msg = Local.getString("Remove")+" "+trainersTable.getSelectedRows().length +" "+Local.getString("trainer");
+        }
+        // Unsure if I need this part but it might have done an error on it 
+        else {
+            return;
+        }
+
+        // Display the confirmation - make sure you want to delete the trainer
+        int confirmation = JOptionPane.showConfirmDialog(
+                App.getFrame(),
+                Local.getString("Are you sure you want to remove the Trainer selected?"),
+                Local.getString("Trainer Removal Confirm"),
+                JOptionPane.YES_NO_OPTION);
+        if (confirmation != JOptionPane.YES_OPTION) {
+            return;// If no then return 
+        }
+        else {
+            // Calling a method from removeTrainer from the TrainerListImpl
+            for (int i = rowSelected.length - 1; i >= 0; i--) {
+		
+                String trainerId = trainersTable.getValueAt(trainersTable.getSelectedRow(), badDefault).toString();
+                CurrentProject.getTrainerList().removeTrainer(trainerId);
+                
+            }
+
+        }
+
+	// Terry's code
+        /*
+        String msg;
+        // unsure what this means for the remove part
+        int badDefault = 100; // should be something like TrainersTable.TRAINER_ID according to task table
+        String thisTrainerId = trainersTable.getModel().getValueAt(trainersTable.getSelectedRow(), badDefault).toString();
+
+        if (trainersTable.getSelectedRows().length > 1)
+            msg = Local.getString("Remove")+" "+trainersTable.getSelectedRows().length +" "+Local.getString("trainers")+"?"
+                    + "\n"+Local.getString("Are you sure?");
+        else {
+            Trainer t = CurrentProject.getTrainerList().getTrainerById(thisTrainerId);// getTaskList().getTask(thisTaskId);
+            // rewrite for remove trainer.
+
+            // check if there are subtasks
+            /*if(CurrentProject.getTaskList().hasSubTasks(thisTrainerId)) {
+                msg = Local.getString("Remove task")+"\n'" + t.getText() + Local.getString("' and all subtasks") +"\n"+Local.getString("Are you sure?");
+            }
+            else {
+                msg = Local.getString("Remove task")+"\n'" + t.getText() + "'\n"+Local.getString("Are you sure?");
+            }
+        }*/
+
+        /*int confirmation = JOptionPane.showConfirmDialog(
+                App.getFrame(),
+                Local.getString("Are you sure you want to remove the Trainer selected?"),
+                Local.getString("Trainer Removal Confirm"),
+                JOptionPane.YES_NO_OPTION);
+        if (confirmation != JOptionPane.YES_OPTION)
+            return;*/
+
+        //Vector toremove = new Vector();
+
+       /* for (int i = 0; i < trainersTable.getSelectedRows().length; i++) {
+            // Task t = // not implemented right or idk?
+                    CurrentProject.getTrainerList().getTask(     // taken from task panel.
+                            trainersTable.getModel().getValueAt(trainersTable.getSelectedRows()[i], TaskTable.TASK_ID).toString());
+            if (t != null)
+                toremove.add(t);
+        }*/
+
+        /*for (int i = 0; i < toremove.size(); i++) {
+            CurrentProject.getTrainerList().removeTrainer((Trainer)toremove.get(i)); // .getTaskList().removeTask((Task)toremove.get(i));
+        }*/
+        trainersTable.tableChanged();
+        CurrentStorage.get().storeTrainerList(CurrentProject.getTrainerList(),CurrentProject.get());//
+        // .storeTaskList(CurrentProject.getTaskList(), CurrentProject.get());
+        parentPanel.updateIndicators();
+        //taskTable.updateUI();
